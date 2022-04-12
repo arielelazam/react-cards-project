@@ -13,9 +13,9 @@ const RegisterPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [biz, setBiz] = useState(false);
-  const [nameError, setNameError] = useState(null);
-  const [emailError, setEmailError] = useState(null);
-  const [passwordError, setPasswordError] = useState(null);
+  const [nameError, setNameError] = useState([]);
+  const [emailError, setEmailError] = useState([]);
+  const [passwordError, setPasswordError] = useState([]);
 
   const handleName = (event) => {
     setName(event.target.value);
@@ -44,14 +44,16 @@ const RegisterPage = () => {
     console.log("validatedValue", validatedValue);
 
     if (error) {
+      let newNameErr = [];
       error.details.forEach((item) => {
         const errMsg = item.message;
         const errSrc = item.path[0];
         console.log("errSrc:", errSrc);
         if (errSrc === "name") {
-          setNameError("*" + errMsg + ".");
-        } else {
-          setNameError("");
+          newNameErr = [...newNameErr, errMsg];
+
+          /* setNameError(newNameErr);
+          console.log("errMsg:", errMsg); */
         }
         if (errSrc === "email") {
           setEmailError("*" + errMsg + ".");
@@ -60,6 +62,8 @@ const RegisterPage = () => {
           setPasswordError("*" + errMsg + ".");
         }
       });
+      console.log("newNameErr", newNameErr);
+      setNameError(newNameErr);
     } else {
       axios
         .post("/users/register", { name, email, password, biz })
@@ -85,9 +89,13 @@ const RegisterPage = () => {
             value={name}
             onChange={handleName}
           />
-          <span value={nameError} className="errMsg">
-            {nameError}
-          </span>
+          {nameError.map((item, idx) => {
+            return (
+              <span key={idx} className="errMsg">
+                {item}
+              </span>
+            );
+          })}
         </div>
       </div>
 
