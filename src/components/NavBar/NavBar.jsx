@@ -1,13 +1,27 @@
 import { NavLink } from "react-router-dom";
 import "./NavBar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDragon } from "@fortawesome/free-solid-svg-icons";
-import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import {
+  faHome,
+  faArrowRightFromBracket,
+  faCircleInfo,
+  faPersonCirclePlus,
+  faAddressCard,
+  faPeopleGroup,
+} from "@fortawesome/free-solid-svg-icons";
+import { authActions } from "../../store/auth";
 
 const NavBar = () => {
-  const loggedIn = useSelector((state) => state.auth.loggedIn);
-  const biz = useSelector((state) => state.auth.biz);
+  const history = useHistory();
+  const dispach = useDispatch();
+
+  const handleLogOut = () => {
+    history.push("/login");
+    dispach(authActions.logout());
+    localStorage.clear();
+  };
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -35,18 +49,8 @@ const NavBar = () => {
                 to="/home"
                 activeClassName="activeLink"
               >
-                <FontAwesomeIcon icon={faDragon} />
+                <FontAwesomeIcon icon={faHome} />
                 Home
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink
-                className="nav-link active"
-                aria-current="page"
-                to="/login"
-                activeClassName="activeLink"
-              >
-                Login
               </NavLink>
             </li>
 
@@ -57,6 +61,7 @@ const NavBar = () => {
                 to="/cardinfo"
                 activeClassName="activeLink"
               >
+                <FontAwesomeIcon icon={faCircleInfo} />
                 Card Info
               </NavLink>
             </li>
@@ -68,6 +73,7 @@ const NavBar = () => {
                 to="/register"
                 activeClassName="activeLink"
               >
+                <FontAwesomeIcon icon={faPersonCirclePlus} />
                 Register
               </NavLink>
             </li>
@@ -79,6 +85,7 @@ const NavBar = () => {
                 to="/createcard"
                 activeClassName="activeLink"
               >
+                <FontAwesomeIcon icon={faAddressCard} />
                 Create Card
               </NavLink>
             </li>
@@ -90,9 +97,22 @@ const NavBar = () => {
                 to="/aboutus"
                 activeClassName="activeLink"
               >
+                <FontAwesomeIcon icon={faPeopleGroup} />
                 About Us
               </NavLink>
             </li>
+
+            <button type="button" className="nav-item signBtn btn btn-danger">
+              <NavLink
+                className="nav-link active"
+                aria-current="page"
+                onClick={handleLogOut}
+                to="/login"
+              >
+                <FontAwesomeIcon icon={faArrowRightFromBracket} />
+                Logout
+              </NavLink>
+            </button>
           </ul>
         </div>
       </div>

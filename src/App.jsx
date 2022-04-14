@@ -1,9 +1,6 @@
 import { Route, Switch } from "react-router-dom";
-import logo from "./logo.svg";
 import "./App.css";
 import { useSelector } from "react-redux";
-
-import { Redirect } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import NavBar from "./components/NavBar/NavBar";
 import LogOutNavBar from "./components/LogOutNavBar/LogOutNavBar";
@@ -23,7 +20,7 @@ function App() {
   const biz = useSelector((state) => state.auth.biz);
 
   return (
-    <div className="container">
+    <div className="main-site-div">
       {loggedIn === true ? (
         biz === true ? (
           <NavBar></NavBar>
@@ -33,37 +30,38 @@ function App() {
       ) : (
         <LogOutNavBar></LogOutNavBar>
       )}
+      <div className="container">
+        <ToastContainer />
 
-      <ToastContainer />
+        <Switch>
+          <Route path="/" exact>
+            <LoginPage />
+          </Route>
 
-      <Switch>
-        <Route path="/" exact>
-          <LoginPage />
-        </Route>
+          <Route path="/home" exact>
+            <HomePage />
+          </Route>
 
-        <Route path="/home" exact>
-          <HomePage />
-        </Route>
+          <Route path="/aboutus" exact>
+            <AboutUsPage />
+          </Route>
+          <AuthGuardRoute path="/cardinfo" exact component={CardInfoPage} />
 
-        <Route path="/aboutus" exact>
-          <AboutUsPage />
-        </Route>
-        <AuthGuardRoute path="/cardinfo" exact component={CardInfoPage} />
+          <AuthGuardRoute path="/createcard" exact component={CreateCardPage} />
 
-        <AuthGuardRoute path="/createcard" exact component={CreateCardPage} />
+          <Route path="/login" exact>
+            <LoginPage />
+          </Route>
 
-        <Route path="/login" exact>
-          <LoginPage />
-        </Route>
+          <Route path="/register" exact>
+            <RegisterPage />
+          </Route>
 
-        <Route path="/register" exact>
-          <RegisterPage />
-        </Route>
-
-        <Route path="/onlyforbiz" exact>
-          <OnlyForBizPage />
-        </Route>
-      </Switch>
+          <Route path="/onlyforbiz" exact>
+            <OnlyForBizPage />
+          </Route>
+        </Switch>
+      </div>
       <div className="my-footer-div">
         <Footer></Footer>
       </div>

@@ -7,8 +7,6 @@ const AuthGuardRoute = ({ component: Component, ...rest }) => {
   const biz = useSelector((state) => state.auth.biz);
   const location = useLocation();
 
-  //const [fromPage, setFromPage] = useState(location.pathname);
-
   return (
     <Route
       {...rest}
@@ -19,7 +17,6 @@ const AuthGuardRoute = ({ component: Component, ...rest }) => {
           <Redirect
             to={{
               pathname: "/onlyforbiz",
-              /* state: { fromPage }, */
             }}
           />
         )
@@ -29,22 +26,3 @@ const AuthGuardRoute = ({ component: Component, ...rest }) => {
 };
 
 export default AuthGuardRoute;
-
-/* 
-
- <Route
-      {...rest}
-      render={(props) =>
-        loggedIn ? (
-          biz ? (
-            <Redirect to="/login" />
-          ) : (
-            <Redirect to="/my-cards" />
-          )
-        ) : (
-          <Redirect to="/login" />
-        )
-      }
-    ></Route>
-  );
-*/

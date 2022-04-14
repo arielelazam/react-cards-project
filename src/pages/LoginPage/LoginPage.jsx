@@ -20,8 +20,6 @@ const LoginPage = () => {
   const location = useLocation("");
 
   const dispatch = useDispatch();
-  const loggedInRedux = useSelector((state) => state.auth.loggedIn);
-  const bizRedux = useSelector((state) => state.auth.biz);
 
   useEffect(() => {
     emailRef.current.focus();

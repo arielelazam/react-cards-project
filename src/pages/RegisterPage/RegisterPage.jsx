@@ -2,12 +2,11 @@ import Joi from "joi-browser";
 import axios from "axios";
 import { useState } from "react";
 import registerSchema from "../../validation/register.validation";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import "./RegisterPage.css";
 
 const RegisterPage = () => {
   const history = useHistory();
-  const location = useLocation();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -41,33 +40,40 @@ const RegisterPage = () => {
     );
 
     const { error } = validatedValue;
-    console.log("validatedValue", validatedValue);
 
     if (error) {
       let newNameErr = [];
+      let newEmailErr = [];
+      let newPasswordErr = [];
       error.details.forEach((item) => {
         const errMsg = item.message;
         const errSrc = item.path[0];
-        console.log("errSrc:", errSrc);
+
         if (errSrc === "name") {
           newNameErr = [...newNameErr, errMsg];
-
-          /* setNameError(newNameErr);
-          console.log("errMsg:", errMsg); */
         }
         if (errSrc === "email") {
-          setEmailError("*" + errMsg + ".");
+          newEmailErr = [...newEmailErr, errMsg];
         }
         if (errSrc === "password") {
-          setPasswordError("*" + errMsg + ".");
+          newPasswordErr = [...newPasswordErr, errMsg];
         }
       });
-      console.log("newNameErr", newNameErr);
+
       setNameError(newNameErr);
+      setEmailError(newEmailErr);
+      setPasswordError(newPasswordErr);
     } else {
       axios
         .post("/users/register", { name, email, password, biz })
-        .then(history.push("/login", { email, password }));
+        .then((res) => {
+          history.push("/login", { email, password });
+        })
+        .catch((err) => {
+          if (err.response) {
+            alert("Email already exist");
+          }
+        });
     }
   };
 
@@ -91,9 +97,11 @@ const RegisterPage = () => {
           />
           {nameError.map((item, idx) => {
             return (
-              <span key={idx} className="errMsg">
-                {item}
-              </span>
+              <ul key={idx}>
+                <li className="errMsg" key={idx}>
+                  *{item}.
+                </li>
+              </ul>
             );
           })}
         </div>
@@ -115,9 +123,15 @@ const RegisterPage = () => {
             value={email}
             onChange={handleEmail}
           />
-          <span value={nameError} className="errMsg">
-            {emailError}
-          </span>
+          {emailError.map((item, idx) => {
+            return (
+              <ul key={idx}>
+                <li className="errMsg" key={idx}>
+                  *{item}.
+                </li>
+              </ul>
+            );
+          })}
         </div>
       </div>
 
@@ -137,9 +151,15 @@ const RegisterPage = () => {
             value={password}
             onChange={handlePassword}
           />
-          <span value={nameError} className="errMsg">
-            {passwordError}
-          </span>
+          {passwordError.map((item, idx) => {
+            return (
+              <ul key={idx}>
+                <li className="errMsg" key={idx}>
+                  *{item}.
+                </li>
+              </ul>
+            );
+          })}
         </div>
       </div>
 

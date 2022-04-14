@@ -2,21 +2,22 @@ import Joi from "joi-browser";
 import axios from "axios";
 import { useState } from "react";
 import createCardSchema from "../../validation/createCard.validation";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import "./CreateCardPage.css";
 
 const CreateCardPage = () => {
   const history = useHistory();
-  const location = useLocation();
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
-  const [nameError, setNameError] = useState(null);
-  const [descriptionError, setDescriptionError] = useState(null);
-  const [addressError, setAddressError] = useState(null);
-  const [phoneError, setPhoneError] = useState(null);
+  const [nameError, setNameError] = useState([]);
+  const [descriptionError, setDescriptionError] = useState([]);
+  const [addressError, setAddressError] = useState([]);
+  const [phoneError, setPhoneError] = useState([]);
+
+  const sended = true;
 
   const handleName = (event) => {
     setName(event.target.value);
@@ -43,28 +44,34 @@ const CreateCardPage = () => {
     );
 
     const { error } = validatedValue;
-    console.log(validatedValue);
 
     if (error) {
+      let newNameErr = [];
+      let newDescriptionErr = [];
+      let newAddressErr = [];
+      let newPhoneErr = [];
       error.details.forEach((item) => {
         const errMsg = item.message;
         const errSrc = item.path[0];
-        console.log(errSrc);
+
         if (errSrc === "name") {
-          setNameError("*" + errMsg + ".");
+          newNameErr = [...newNameErr, errMsg];
         }
         if (errSrc === "description") {
-          setDescriptionError("*" + errMsg + ".");
+          newDescriptionErr = [...newDescriptionErr, errMsg];
         }
         if (errSrc === "address") {
-          setAddressError("*" + errMsg + ".");
+          newAddressErr = [...newAddressErr, errMsg];
         }
         if (errSrc === "phone") {
-          setPhoneError("*" + errMsg + ".");
+          newPhoneErr = [...newPhoneErr, errMsg];
         }
+
+        setNameError(newNameErr);
+        setDescriptionError(newDescriptionErr);
+        setAddressError(newAddressErr);
+        setPhoneError(newPhoneErr);
       });
-      /* if (error) {
-      alert(error); */
     } else {
       axios
         .post("/cards/createnewcard", {
@@ -73,7 +80,7 @@ const CreateCardPage = () => {
           address,
           phone,
         })
-        .then(history.push("cardinfo"))
+        .then(history.push("/cardinfo", { sended }))
         .catch((err) => {
           alert(err);
         });
@@ -93,9 +100,15 @@ const CreateCardPage = () => {
             value={name}
             onChange={handleName}
           />
-          <span value={nameError} className="create-err">
-            {nameError}
-          </span>
+          {nameError.map((item, idx) => {
+            return (
+              <ul key={idx}>
+                <li className="errMsg" key={idx}>
+                  *{item}.
+                </li>
+              </ul>
+            );
+          })}
         </div>
 
         <div className="form-group col-md-6 create-row">
@@ -108,9 +121,15 @@ const CreateCardPage = () => {
             value={description}
             onChange={handleDescription}
           />
-          <span value={descriptionError} className="create-err">
-            {descriptionError}
-          </span>
+          {descriptionError.map((item, idx) => {
+            return (
+              <ul key={idx}>
+                <li className="errMsg" key={idx}>
+                  *{item}.
+                </li>
+              </ul>
+            );
+          })}
         </div>
       </div>
 
@@ -124,9 +143,15 @@ const CreateCardPage = () => {
           value={address}
           onChange={handleAddress}
         />
-        <span value={addressError} className="create-err">
-          {addressError}
-        </span>
+        {addressError.map((item, idx) => {
+          return (
+            <ul key={idx}>
+              <li className="errMsg" key={idx}>
+                *{item}.
+              </li>
+            </ul>
+          );
+        })}
       </div>
 
       <div className="form-group col-md-6 create-row">
@@ -139,9 +164,15 @@ const CreateCardPage = () => {
           value={phone}
           onChange={handlePhone}
         />
-        <span value={phoneError} className="create-err">
-          {phoneError}
-        </span>
+        {phoneError.map((item, idx) => {
+          return (
+            <ul key={idx}>
+              <li className="errMsg" key={idx}>
+                *{item}.
+              </li>
+            </ul>
+          );
+        })}
       </div>
 
       <button type="submit" className="btn btn-primary">

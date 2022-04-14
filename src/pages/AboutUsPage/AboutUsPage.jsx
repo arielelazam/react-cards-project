@@ -1,3 +1,5 @@
+import "./AboutUsPage.css";
+
 const AboutUsPage = () => {
   return <h1>About us page!</h1>;
 };
